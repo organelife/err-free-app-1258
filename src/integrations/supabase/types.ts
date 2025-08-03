@@ -14,7 +14,350 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_permissions: {
+        Row: {
+          admin_id: string | null
+          can_delete: boolean
+          can_manage_admins: boolean
+          can_read: boolean
+          can_write: boolean
+          created_at: string
+          id: string
+          permission_type: string
+          updated_at: string
+        }
+        Insert: {
+          admin_id?: string | null
+          can_delete?: boolean
+          can_manage_admins?: boolean
+          can_read?: boolean
+          can_write?: boolean
+          created_at?: string
+          id?: string
+          permission_type: string
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string | null
+          can_delete?: boolean
+          can_manage_admins?: boolean
+          can_read?: boolean
+          can_write?: boolean
+          created_at?: string
+          id?: string
+          permission_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_permissions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_login: string | null
+          password_hash: string
+          role: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash: string
+          role: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash?: string
+          role?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      announcements: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cash_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          transaction_date: string
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          transaction_date?: string
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          transaction_date?: string
+          transaction_type?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          actual_fee: number
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          offer_fee: number
+          popup_image_url: string | null
+          preference: string | null
+          qr_image_url: string | null
+          updated_at: string
+          warning_message: string | null
+        }
+        Insert: {
+          actual_fee?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          offer_fee?: number
+          popup_image_url?: string | null
+          preference?: string | null
+          qr_image_url?: string | null
+          updated_at?: string
+          warning_message?: string | null
+        }
+        Update: {
+          actual_fee?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          offer_fee?: number
+          popup_image_url?: string | null
+          preference?: string | null
+          qr_image_url?: string | null
+          updated_at?: string
+          warning_message?: string | null
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          description: string
+          expense_date: string
+          id: string
+          payment_method: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          description: string
+          expense_date?: string
+          id?: string
+          payment_method: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          expense_date?: string
+          id?: string
+          payment_method?: string
+        }
+        Relationships: []
+      }
+      panchayaths: {
+        Row: {
+          created_at: string
+          district: string
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          address: string
+          agent_pro: string | null
+          approval_notes: string | null
+          approved_by: string | null
+          approved_date: string | null
+          category_id: string | null
+          created_at: string
+          customer_id: string
+          fee_paid: number | null
+          id: string
+          mobile_number: string
+          name: string
+          panchayath_id: string | null
+          preference: string | null
+          status: string
+          updated_at: string
+          ward: string
+        }
+        Insert: {
+          address: string
+          agent_pro?: string | null
+          approval_notes?: string | null
+          approved_by?: string | null
+          approved_date?: string | null
+          category_id?: string | null
+          created_at?: string
+          customer_id: string
+          fee_paid?: number | null
+          id?: string
+          mobile_number: string
+          name: string
+          panchayath_id?: string | null
+          preference?: string | null
+          status?: string
+          updated_at?: string
+          ward: string
+        }
+        Update: {
+          address?: string
+          agent_pro?: string | null
+          approval_notes?: string | null
+          approved_by?: string | null
+          approved_date?: string | null
+          category_id?: string | null
+          created_at?: string
+          customer_id?: string
+          fee_paid?: number | null
+          id?: string
+          mobile_number?: string
+          name?: string
+          panchayath_id?: string | null
+          preference?: string | null
+          status?: string
+          updated_at?: string
+          ward?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_panchayath_id_fkey"
+            columns: ["panchayath_id"]
+            isOneToOne: false
+            referencedRelation: "panchayaths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      utilities: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
