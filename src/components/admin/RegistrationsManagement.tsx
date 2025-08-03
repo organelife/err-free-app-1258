@@ -463,6 +463,8 @@ const RegistrationsManagement = ({
               <tr className="bg-gray-50">
                 <th className="border border-gray-200 px-2 md:px-4 py-2 text-left text-xs md:text-sm">
                   <input
+                    id="select-all-registrations"
+                    name="select-all-registrations"
                     type="checkbox"
                     checked={selectedRows.length === registrations?.length && registrations?.length > 0}
                     onChange={toggleAllSelection}
@@ -492,6 +494,8 @@ const RegistrationsManagement = ({
                 >
                   <td className="border border-gray-200 px-2 md:px-4 py-2">
                     <input
+                      id={`select-registration-${registration.id}`}
+                      name={`select-registration-${registration.id}`}
                       type="checkbox"
                       checked={selectedRows.includes(registration.id)}
                       onChange={() => toggleRowSelection(registration.id)}
