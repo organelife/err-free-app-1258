@@ -179,6 +179,7 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          is_highlighted: boolean | null
           name: string
           offer_fee: number
           popup_image_url: string | null
@@ -193,6 +194,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_highlighted?: boolean | null
           name: string
           offer_fee?: number
           popup_image_url?: string | null
@@ -207,6 +209,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_highlighted?: boolean | null
           name?: string
           offer_fee?: number
           popup_image_url?: string | null
