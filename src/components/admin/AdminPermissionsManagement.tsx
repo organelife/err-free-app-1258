@@ -80,7 +80,7 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
       const { data, error } = await supabase
         .from('admin_permissions')
         .select('module, permission_type')
-        .eq('admin_user_id', selectedAdmin);
+        .eq('admin_id', selectedAdmin);
       
       if (error) throw error;
       return data as Permission[];
@@ -95,7 +95,7 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
       await supabase
         .from('admin_permissions')
         .delete()
-        .eq('admin_user_id', adminId);
+        .eq('admin_id', adminId);
 
       // Then insert new permissions
       const permissionsToInsert: any[] = [];
@@ -104,7 +104,7 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
         Object.entries(perms).forEach(([permType, hasPermission]) => {
           if (hasPermission) {
             permissionsToInsert.push({
-              admin_user_id: adminId,
+              admin_id: adminId,
               module,
               permission_type: permType
             });

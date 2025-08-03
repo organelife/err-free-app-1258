@@ -64,7 +64,7 @@ const AdminDashboard = () => {
       const { data, error } = await supabase
         .from('admin_permissions')
         .select('module, permission_type')
-        .eq('admin_user_id', adminSession.id);
+        .eq('admin_id', adminSession.id);
       
       if (error) {
         console.error('Error fetching admin permissions:', error);

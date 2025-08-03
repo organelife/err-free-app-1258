@@ -422,7 +422,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      approve_registration: {
+        Args: {
+          registration_id: string
+          approver_username: string
+          notes?: string
+        }
+        Returns: undefined
+      }
+      reject_registration: {
+        Args: {
+          registration_id: string
+          rejector_username: string
+          notes?: string
+        }
+        Returns: undefined
+      }
+      reset_registration_approval: {
+        Args: { registration_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
