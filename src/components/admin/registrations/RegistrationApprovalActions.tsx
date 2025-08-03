@@ -130,13 +130,18 @@ const RegistrationApprovalActions: React.FC<RegistrationApprovalActionsProps> = 
     return null;
   }
 
+  console.log('RegistrationApprovalActions rendering for:', registration.customer_id, 'status:', registration.status, 'permissions:', permissions);
+
   return (
     <div className="flex gap-2">
       {registration.status === 'pending' && (
         <>
           <Button
             size="sm"
-            onClick={() => openDialog('approve')}
+            onClick={() => {
+              console.log('RegistrationApprovalActions approve clicked for:', registration.id);
+              openDialog('approve');
+            }}
             className="bg-green-600 hover:bg-green-700 text-white"
             disabled={isLoading}
           >
@@ -145,7 +150,10 @@ const RegistrationApprovalActions: React.FC<RegistrationApprovalActionsProps> = 
           <Button
             size="sm"
             variant="destructive"
-            onClick={() => openDialog('reject')}
+            onClick={() => {
+              console.log('RegistrationApprovalActions reject clicked for:', registration.id);
+              openDialog('reject');
+            }}
             disabled={isLoading}
           >
             <XCircle className="h-3 w-3" />
@@ -157,7 +165,10 @@ const RegistrationApprovalActions: React.FC<RegistrationApprovalActionsProps> = 
         <Button
           size="sm"
           variant="outline"
-          onClick={() => openDialog('reset')}
+          onClick={() => {
+            console.log('RegistrationApprovalActions reset clicked for:', registration.id);
+            openDialog('reset');
+          }}
           disabled={isLoading}
           className="text-blue-600 border-blue-600 hover:bg-blue-50"
         >
