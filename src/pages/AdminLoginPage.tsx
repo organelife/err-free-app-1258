@@ -36,25 +36,14 @@ const AdminLoginPage = () => {
         throw new Error('Invalid credentials');
       }
 
-      // Temporary simple authentication for debugging
+      // Validate password against database hash
       console.log('Login attempt:', {
         username: credentials.username,
-        password: credentials.password,
         userFound: !!adminUsers
       });
       
-      // For now, just check if user exists and use simple password check
-      let isPasswordValid = false;
-      
-      if (credentials.username === 'eva' && credentials.password === '123') {
-        isPasswordValid = true;
-        console.log('Using simplified auth for eva');
-      } else if (credentials.username === 'testadmin' && credentials.password === 'password') {
-        isPasswordValid = true;
-        console.log('Using simplified auth for testadmin');
-      } else {
-        console.log('No matching credentials found');
-      }
+      const isPasswordValid = await bcrypt.compare(credentials.password, adminUsers.password_hash);
+      console.log('Password validation result:', isPasswordValid);
 
       if (!isPasswordValid) {
         console.error('Authentication failed');
