@@ -47,31 +47,39 @@ const RegistrationApprovalActions: React.FC<RegistrationApprovalActionsProps> = 
     setIsLoading(true);
     try {
       const currentAdmin = getCurrentAdmin();
+      console.log('Attempting approval with:', { action, registration: registration.id, admin: currentAdmin, notes: actionNotes });
       
       let result;
       switch (action) {
         case 'approve':
+          console.log('Calling approve_registration RPC...');
           result = await supabase.rpc('approve_registration', {
             registration_id: registration.id,
             approver_username: currentAdmin,
             notes: actionNotes || null
           });
+          console.log('Approve result:', result);
           break;
         case 'reject':
+          console.log('Calling reject_registration RPC...');
           result = await supabase.rpc('reject_registration', {
             registration_id: registration.id,
             rejector_username: currentAdmin,
             notes: actionNotes || null
           });
+          console.log('Reject result:', result);
           break;
         case 'reset':
+          console.log('Calling reset_registration_approval RPC...');
           result = await supabase.rpc('reset_registration_approval', {
             registration_id: registration.id
           });
+          console.log('Reset result:', result);
           break;
       }
 
       if (result.error) {
+        console.error('RPC Error:', result.error);
         throw result.error;
       }
 
