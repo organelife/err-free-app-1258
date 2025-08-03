@@ -36,10 +36,21 @@ const AdminLoginPage = () => {
         throw new Error('Invalid credentials');
       }
 
+      // Debug logging
+      console.log('Attempting login with:', {
+        username: credentials.username,
+        passwordLength: credentials.password.length,
+        hashStartsWith: adminUsers.password_hash.substring(0, 10),
+        hashLength: adminUsers.password_hash.length
+      });
+
       // Verify password using bcrypt
       const isPasswordValid = await bcrypt.compare(credentials.password, adminUsers.password_hash);
+      
+      console.log('Password validation result:', isPasswordValid);
 
       if (!isPasswordValid) {
+        console.error('Password validation failed');
         throw new Error('Invalid credentials');
       }
 
