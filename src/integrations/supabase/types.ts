@@ -337,6 +337,9 @@ export type Database = {
         Row: {
           address: string
           agent_pro: string | null
+          approval_notes: string | null
+          approval_status: string | null
+          approved_at: string | null
           approved_by: string | null
           approved_date: string | null
           category_id: string
@@ -355,6 +358,9 @@ export type Database = {
         Insert: {
           address: string
           agent_pro?: string | null
+          approval_notes?: string | null
+          approval_status?: string | null
+          approved_at?: string | null
           approved_by?: string | null
           approved_date?: string | null
           category_id: string
@@ -373,6 +379,9 @@ export type Database = {
         Update: {
           address?: string
           agent_pro?: string | null
+          approval_notes?: string | null
+          approval_status?: string | null
+          approved_at?: string | null
           approved_by?: string | null
           approved_date?: string | null
           category_id?: string
@@ -440,6 +449,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_registration: {
+        Args: {
+          registration_id: string
+          approver_username?: string
+          notes?: string
+        }
+        Returns: undefined
+      }
       can_manage_admins: {
         Args: { user_role: string }
         Returns: boolean
@@ -451,6 +468,18 @@ export type Database = {
       is_admin_context: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      reject_registration: {
+        Args: {
+          registration_id: string
+          rejector_username?: string
+          notes?: string
+        }
+        Returns: undefined
+      }
+      reset_registration_approval: {
+        Args: { registration_id: string }
+        Returns: undefined
       }
     }
     Enums: {

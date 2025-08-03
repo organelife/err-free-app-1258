@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import RegistrationEditDialog from './RegistrationEditDialog';
 import RegistrationsFilters from './registrations/RegistrationsFilters';
 import RegistrationsTableHeader from './registrations/RegistrationsTableHeader';
-import RegistrationsTableActions from './registrations/RegistrationsTableActions';
+import RegistrationApprovalActions from './registrations/RegistrationApprovalActions';
 import { getCategoryColor, getStatusBadge } from './registrations/utils';
 import { exportToExcel, exportToPDF } from './registrations/exportUtils';
 import { 
@@ -146,59 +147,12 @@ const RegistrationsManagement = ({
     };
   }, [queryClient]);
 
-  // Update status mutation
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: UpdateStatusParams) => {
-      console.log('Updating status for registration:', id, 'to:', status);
-      const updateData: any = {
-        status,
-        updated_at: new Date().toISOString()
-      };
-      
-      // Set approved_date and approved_by when status is approved
-      if (status === 'approved') {
-        updateData.approved_date = new Date().toISOString();
-        // Get current admin session
-        const adminSession = localStorage.getItem('adminSession');
-        if (adminSession) {
-          const sessionData = JSON.parse(adminSession);
-          updateData.approved_by = sessionData.username;
-        } else {
-          updateData.approved_by = 'self'; // For self-approval (free registrations)
-        }
-      }
-      
-      // Clear approved_by and approved_date when status is changed to pending
-      if (status === 'pending') {
-        updateData.approved_by = null;
-        updateData.approved_date = null;
-      }
-      
-      const { error } = await supabase.from('registrations').update(updateData).eq('id', id);
-      if (error) {
-        console.error('Error updating status:', error);
-        throw error;
-      }
-      console.log('Status updated successfully');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['admin-registrations']
-      });
-      toast({
-        title: "Status Updated",
-        description: "Registration status has been updated successfully."
-      });
-    },
-    onError: error => {
-      console.error('Status update failed:', error);
-      toast({
-        title: "Update Failed",
-        description: "Failed to update registration status.",
-        variant: "destructive"
-      });
-    }
-  });
+  // Refresh function for approval actions
+  const handleApprovalUpdate = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['admin-registrations']
+    });
+  };
 
   // Delete registration mutation
   const deleteMutation = useMutation({
@@ -230,18 +184,6 @@ const RegistrationsManagement = ({
     }
   });
 
-  const handleStatusUpdate = (id: string, status: ApplicationStatus) => {
-    console.log('Handle status update called:', id, status, 'canWrite:', permissions.canWrite);
-    if (permissions.canWrite) {
-      updateStatusMutation.mutate({ id, status });
-    } else {
-      toast({
-        title: "Permission Denied",
-        description: "You don't have permission to update registrations.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const handleDelete = (id: string) => {
     console.log('Handle delete called:', id, 'canDelete:', permissions.canDelete);
@@ -269,7 +211,7 @@ const RegistrationsManagement = ({
     });
   };
 
-  const handleBulkApprove = () => {
+  const handleBulkApprove = async () => {
     if (selectedRows.length === 0) {
       toast({
         title: "No Selection",
@@ -279,10 +221,34 @@ const RegistrationsManagement = ({
       return;
     }
 
-    selectedRows.forEach(id => {
-      updateStatusMutation.mutate({ id, status: 'approved' });
-    });
-    setSelectedRows([]);
+    const adminSession = localStorage.getItem('adminSession');
+    const currentAdmin = adminSession ? JSON.parse(adminSession).username : 'system';
+
+    try {
+      for (const id of selectedRows) {
+        const { error } = await supabase.rpc('approve_registration', {
+          registration_id: id,
+          approver_username: currentAdmin,
+          notes: 'Bulk approval'
+        });
+        if (error) throw error;
+      }
+      
+      toast({
+        title: "Bulk Approval Successful",
+        description: `${selectedRows.length} registrations approved successfully.`
+      });
+      
+      setSelectedRows([]);
+      handleApprovalUpdate();
+    } catch (error) {
+      console.error('Bulk approval failed:', error);
+      toast({
+        title: "Bulk Approval Failed",
+        description: "Failed to approve some registrations.",
+        variant: "destructive"
+      });
+    }
   };
 
   const toggleRowSelection = (id: string) => {
@@ -572,13 +538,31 @@ const RegistrationsManagement = ({
                     ) : '-'}
                   </td>
                   <td className="border border-gray-200 px-2 md:px-4 py-2">
-                    <RegistrationsTableActions
-                      registration={registration}
-                      permissions={permissions}
-                      onStatusUpdate={handleStatusUpdate}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                    />
+                    <div className="flex gap-2">
+                      <RegistrationApprovalActions
+                        registration={registration}
+                        permissions={permissions}
+                        onStatusUpdate={handleApprovalUpdate}
+                      />
+                      {permissions.canWrite && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(registration)}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      {permissions.canDelete && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDelete(registration.id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

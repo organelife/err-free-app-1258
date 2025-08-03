@@ -10,11 +10,14 @@ export interface Registration {
   ward: string;
   agent_pro: string | null;
   status: ApplicationStatus;
+  approval_status?: string;
   fee_paid: number;
   created_at: string;
   updated_at: string;
   approved_date: string | null;
+  approved_at?: string | null;
   approved_by: string | null;
+  approval_notes?: string | null;
   category_id: string;
   panchayath_id: string | null;
   preference: string | null;
