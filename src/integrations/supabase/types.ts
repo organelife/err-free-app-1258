@@ -23,6 +23,7 @@ export type Database = {
           can_write: boolean
           created_at: string
           id: string
+          module: string | null
           permission_type: string
           updated_at: string
         }
@@ -34,6 +35,7 @@ export type Database = {
           can_write?: boolean
           created_at?: string
           id?: string
+          module?: string | null
           permission_type: string
           updated_at?: string
         }
@@ -45,6 +47,7 @@ export type Database = {
           can_write?: boolean
           created_at?: string
           id?: string
+          module?: string | null
           permission_type?: string
           updated_at?: string
         }
@@ -96,28 +99,37 @@ export type Database = {
           content: string
           created_at: string
           created_by: string | null
+          expiry_date: string | null
           id: string
           is_active: boolean
+          poster_image_url: string | null
           title: string
           updated_at: string
+          youtube_video_url: string | null
         }
         Insert: {
           content: string
           created_at?: string
           created_by?: string | null
+          expiry_date?: string | null
           id?: string
           is_active?: boolean
+          poster_image_url?: string | null
           title: string
           updated_at?: string
+          youtube_video_url?: string | null
         }
         Update: {
           content?: string
           created_at?: string
           created_by?: string | null
+          expiry_date?: string | null
           id?: string
           is_active?: boolean
+          poster_image_url?: string | null
           title?: string
           updated_at?: string
+          youtube_video_url?: string | null
         }
         Relationships: []
       }
@@ -127,7 +139,10 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          from_date: string | null
           id: string
+          remarks: string | null
+          to_date: string | null
           transaction_date: string
           transaction_type: string
         }
@@ -136,7 +151,10 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          from_date?: string | null
           id?: string
+          remarks?: string | null
+          to_date?: string | null
           transaction_date?: string
           transaction_type: string
         }
@@ -145,7 +163,10 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          from_date?: string | null
           id?: string
+          remarks?: string | null
+          to_date?: string | null
           transaction_date?: string
           transaction_type?: string
         }
@@ -252,6 +273,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      registration_verifications: {
+        Row: {
+          created_at: string
+          id: string
+          registration_id: string | null
+          verification_notes: string | null
+          verified_at: string
+          verified_by: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          registration_id?: string | null
+          verification_notes?: string | null
+          verified_at?: string
+          verified_by: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          registration_id?: string | null
+          verification_notes?: string | null
+          verified_at?: string
+          verified_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_verifications_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       registrations: {
         Row: {
