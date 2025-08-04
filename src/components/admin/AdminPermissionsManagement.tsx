@@ -54,14 +54,14 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
   const [selectedAdmin, setSelectedAdmin] = useState<string>('');
   const [modulePermissions, setModulePermissions] = useState<ModulePermissions>({});
 
-  // Fetch admin users (excluding super_admins as they have all permissions)
-  const { data: adminUsers } = useQuery({
-    queryKey: ['admin-users-for-permissions'],
+  // Fetch management users (excluding super_managers as they have all permissions)
+  const { data: managementUsers } = useQuery({
+    queryKey: ['management-users-for-permissions'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('admin_users')
+        .from('management_users')
         .select('id, username, role')
-        .neq('role', 'super_admin')
+        .neq('role', 'super_manager')
         .eq('is_active', true)
         .order('username');
       
@@ -71,16 +71,16 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
     enabled: permissions.canManageAdmins
   });
 
-  // Fetch permissions for selected admin
+  // Fetch permissions for selected manager
   const { data: currentPermissions } = useQuery({
-    queryKey: ['admin-permissions', selectedAdmin],
+    queryKey: ['management-permissions', selectedAdmin],
     queryFn: async () => {
       if (!selectedAdmin) return [];
       
       const { data, error } = await supabase
-        .from('admin_permissions')
+        .from('management_permissions')
         .select('module, permission_type')
-        .eq('admin_id', selectedAdmin);
+        .eq('manager_id', selectedAdmin);
       
       if (error) throw error;
       return data as Permission[];
@@ -90,12 +90,12 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
 
   // Update permissions mutation
   const updatePermissionsMutation = useMutation({
-    mutationFn: async (adminId: string) => {
-      // First, delete existing permissions for this admin
+    mutationFn: async (managerId: string) => {
+      // First, delete existing permissions for this manager
       await supabase
-        .from('admin_permissions')
+        .from('management_permissions')
         .delete()
-        .eq('admin_id', adminId);
+        .eq('manager_id', managerId);
 
       // Then insert new permissions
       const permissionsToInsert: any[] = [];
@@ -104,7 +104,7 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
         Object.entries(perms).forEach(([permType, hasPermission]) => {
           if (hasPermission) {
             permissionsToInsert.push({
-              admin_id: adminId,
+              manager_id: managerId,
               module,
               permission_type: permType
             });
@@ -114,17 +114,17 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
 
       if (permissionsToInsert.length > 0) {
         const { error } = await supabase
-          .from('admin_permissions')
+          .from('management_permissions')
           .insert(permissionsToInsert);
         
         if (error) throw error;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-permissions'] });
+      queryClient.invalidateQueries({ queryKey: ['management-permissions'] });
       toast({
         title: "Permissions Updated",
-        description: "Admin permissions have been updated successfully.",
+        description: "Manager permissions have been updated successfully.",
       });
       setIsDialogOpen(false);
       setSelectedAdmin('');
@@ -236,7 +236,7 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
                       <SelectValue placeholder="Choose an admin user" />
                     </SelectTrigger>
                     <SelectContent>
-                      {adminUsers?.map((admin) => (
+                      {managementUsers?.map((admin) => (
                         <SelectItem key={admin.id} value={admin.id}>
                           {admin.username} ({admin.role.replace('_', ' ').toUpperCase()})
                         </SelectItem>
@@ -310,11 +310,11 @@ const AdminPermissionsManagement = ({ permissions }: { permissions: any }) => {
             Assign specific permissions to admin users. Super admins automatically have all permissions.
           </p>
           
-          {adminUsers && adminUsers.length > 0 ? (
+          {managementUsers && managementUsers.length > 0 ? (
             <div className="space-y-4">
               <h3 className="font-medium">Current Admin Users</h3>
               <div className="grid gap-3">
-                {adminUsers.map((admin) => (
+                {managementUsers.map((admin) => (
                   <Card key={admin.id} className="p-3">
                     <div className="flex items-center justify-between">
                       <div>

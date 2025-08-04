@@ -14,86 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_permissions: {
-        Row: {
-          admin_id: string | null
-          can_delete: boolean
-          can_manage_admins: boolean
-          can_read: boolean
-          can_write: boolean
-          created_at: string
-          id: string
-          module: string | null
-          permission_type: string
-          updated_at: string
-        }
-        Insert: {
-          admin_id?: string | null
-          can_delete?: boolean
-          can_manage_admins?: boolean
-          can_read?: boolean
-          can_write?: boolean
-          created_at?: string
-          id?: string
-          module?: string | null
-          permission_type: string
-          updated_at?: string
-        }
-        Update: {
-          admin_id?: string | null
-          can_delete?: boolean
-          can_manage_admins?: boolean
-          can_read?: boolean
-          can_write?: boolean
-          created_at?: string
-          id?: string
-          module?: string | null
-          permission_type?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admin_permissions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      admin_users: {
-        Row: {
-          created_at: string
-          id: string
-          is_active: boolean
-          last_login: string | null
-          password_hash: string
-          role: string
-          updated_at: string
-          username: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          last_login?: string | null
-          password_hash: string
-          role: string
-          updated_at?: string
-          username: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          last_login?: string | null
-          password_hash?: string
-          role?: string
-          updated_at?: string
-          username?: string
-        }
-        Relationships: []
-      }
       announcements: {
         Row: {
           content: string
@@ -247,6 +167,86 @@ export type Database = {
           expense_date?: string
           id?: string
           payment_method?: string
+        }
+        Relationships: []
+      }
+      management_permissions: {
+        Row: {
+          can_delete: boolean
+          can_manage_managers: boolean
+          can_read: boolean
+          can_write: boolean
+          created_at: string
+          id: string
+          manager_id: string | null
+          module: string
+          permission_type: string
+          updated_at: string
+        }
+        Insert: {
+          can_delete?: boolean
+          can_manage_managers?: boolean
+          can_read?: boolean
+          can_write?: boolean
+          created_at?: string
+          id?: string
+          manager_id?: string | null
+          module: string
+          permission_type: string
+          updated_at?: string
+        }
+        Update: {
+          can_delete?: boolean
+          can_manage_managers?: boolean
+          can_read?: boolean
+          can_write?: boolean
+          created_at?: string
+          id?: string
+          manager_id?: string | null
+          module?: string
+          permission_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "management_permissions_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "management_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      management_users: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_login: string | null
+          password_hash: string
+          role: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash: string
+          role: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          password_hash?: string
+          role?: string
+          updated_at?: string
+          username?: string
         }
         Relationships: []
       }

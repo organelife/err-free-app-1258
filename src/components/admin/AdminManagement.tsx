@@ -42,13 +42,13 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
 
   console.log('AdminManagement permissions:', permissions);
 
-  // Fetch admin users
-  const { data: adminUsers, isLoading, error } = useQuery({
-    queryKey: ['admin-users'],
+  // Fetch management users
+  const { data: managementUsers, isLoading, error } = useQuery({
+    queryKey: ['management-users'],
     queryFn: async () => {
-      console.log('Fetching admin users...');
+      console.log('Fetching management users...');
       const { data, error } = await supabase
-        .from('admin_users')
+        .from('management_users')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -81,7 +81,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
         }
 
         const { error } = await supabase
-          .from('admin_users')
+          .from('management_users')
           .update(updateData)
           .eq('id', editingAdmin.id);
         
@@ -96,7 +96,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
         const hashedPassword = await bcrypt.hash(adminData.password, 6);
         
         const { error } = await supabase
-          .from('admin_users')
+          .from('management_users')
           .insert([{
             username: adminData.username,
             password_hash: hashedPassword,
@@ -112,7 +112,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['management-users'] });
       setIsDialogOpen(false);
       setEditingAdmin(null);
       setFormData({
@@ -122,8 +122,8 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
         is_active: true
       });
       toast({
-        title: editingAdmin ? "Admin Updated" : "Admin Created",
-        description: `Admin has been ${editingAdmin ? 'updated' : 'created'} successfully.`,
+        title: editingAdmin ? "Manager Updated" : "Manager Created",
+        description: `Manager has been ${editingAdmin ? 'updated' : 'created'} successfully.`,
       });
     },
     onError: (error) => {
@@ -141,7 +141,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
     mutationFn: async (id: string) => {
       console.log('Deleting admin:', id);
       const { error } = await supabase
-        .from('admin_users')
+        .from('management_users')
         .delete()
         .eq('id', id);
       
@@ -152,10 +152,10 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
       console.log('Admin deleted successfully');
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['management-users'] });
       toast({
-        title: "Admin Deleted",
-        description: "Admin has been deleted successfully.",
+        title: "Manager Deleted",
+        description: "Manager has been deleted successfully.",
       });
     },
     onError: (error) => {
@@ -349,7 +349,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
               </tr>
             </thead>
             <tbody>
-              {adminUsers?.map((admin) => (
+              {managementUsers?.map((admin) => (
                 <tr key={admin.id} className="hover:bg-gray-50">
                   <td className="border border-gray-200 px-4 py-2 font-medium">
                     {admin.username}
@@ -410,7 +410,7 @@ const AdminManagement = ({ permissions }: { permissions: any }) => {
           </div>
         )}
 
-        {!isLoading && (!adminUsers || adminUsers.length === 0) && (
+        {!isLoading && (!managementUsers || managementUsers.length === 0) && (
           <div className="text-center py-8 text-gray-500">
             No admin users found.
           </div>

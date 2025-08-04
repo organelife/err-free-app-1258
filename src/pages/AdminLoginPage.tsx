@@ -24,25 +24,25 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      // Query the database for the admin user
-      const { data: adminUsers, error } = await supabase
-        .from('admin_users')
+      // Query the database for the management user
+      const { data: managementUsers, error } = await supabase
+        .from('management_users')
         .select('*')
         .eq('username', credentials.username)
         .eq('is_active', true)
         .single();
 
-      if (error || !adminUsers) {
+      if (error || !managementUsers) {
         throw new Error('Invalid credentials');
       }
 
       // Validate password against database hash
       console.log('Login attempt:', {
         username: credentials.username,
-        userFound: !!adminUsers
+        userFound: !!managementUsers
       });
       
-      const isPasswordValid = await bcrypt.compare(credentials.password, adminUsers.password_hash);
+      const isPasswordValid = await bcrypt.compare(credentials.password, managementUsers.password_hash);
       console.log('Password validation result:', isPasswordValid);
 
       if (!isPasswordValid) {
@@ -54,15 +54,15 @@ const AdminLoginPage = () => {
 
       // Update last login
       await supabase
-        .from('admin_users')
+        .from('management_users')
         .update({ last_login: new Date().toISOString() })
-        .eq('id', adminUsers.id);
+        .eq('id', managementUsers.id);
 
       // Create session data
       const sessionData = {
-        id: adminUsers.id,
-        username: adminUsers.username,
-        role: adminUsers.role,
+        id: managementUsers.id,
+        username: managementUsers.username,
+        role: managementUsers.role,
         sessionId: Date.now().toString(),
         loginTime: new Date().toISOString()
       };
@@ -71,7 +71,7 @@ const AdminLoginPage = () => {
 
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${adminUsers.username}!`,
+        description: `Welcome back, ${managementUsers.username}!`,
       });
 
       navigate('/admin/dashboard');
