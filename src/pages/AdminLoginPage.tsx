@@ -45,13 +45,18 @@ const AdminLoginPage = () => {
         hashLength: managementUsers.password_hash?.length
       });
       
-      const isPasswordValid = await bcrypt.compare(credentials.password, managementUsers.password_hash);
-      console.log('Password validation result:', isPasswordValid);
+      try {
+        const isPasswordValid = await bcrypt.compare(credentials.password, managementUsers.password_hash);
+        console.log('Password validation result:', isPasswordValid);
 
-      if (!isPasswordValid) {
-        console.error('Authentication failed - password mismatch');
-        console.error('Input password:', `"${credentials.password}"`);
-        console.error('Stored hash:', managementUsers.password_hash);
+        if (!isPasswordValid) {
+          console.error('Authentication failed - password mismatch');
+          console.error('Input password:', `"${credentials.password}"`);
+          console.error('Stored hash:', managementUsers.password_hash);
+          throw new Error('Invalid credentials');
+        }
+      } catch (bcryptError) {
+        console.error('BCrypt comparison error:', bcryptError);
         throw new Error('Invalid credentials');
       }
       
