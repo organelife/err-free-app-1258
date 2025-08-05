@@ -62,9 +62,9 @@ const AdminDashboard = () => {
       console.log('Fetching permissions for admin:', adminSession.id, adminSession.username);
       
       const { data, error } = await supabase
-        .from('admin_permissions')
+        .from('management_permissions')
         .select('module, permission_type')
-        .eq('admin_id', adminSession.id);
+        .eq('manager_id', adminSession.id);
       
       if (error) {
         console.error('Error fetching admin permissions:', error);
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
       const hasReadPermission = adminPermissions.some(p => p.permission_type === 'read');
       const hasWritePermission = adminPermissions.some(p => p.permission_type === 'write');
       const hasDeletePermission = adminPermissions.some(p => p.permission_type === 'delete');
-      const hasAdminManagePermission = adminPermissions.some(p => p.module === 'admin_users' && (p.permission_type === 'write' || p.permission_type === 'read'));
+      const hasAdminManagePermission = adminPermissions.some(p => p.module === 'management_users' && (p.permission_type === 'write' || p.permission_type === 'read'));
       
       const dbPerms = {
         canRead: hasReadPermission,
